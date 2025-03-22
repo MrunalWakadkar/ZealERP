@@ -19,3 +19,25 @@ class Admin(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
+from django.db import models
+
+class Subject(models.Model):
+    SUBJECT_TYPES = [
+        ('Core', 'Core'),
+        ('Elective', 'Elective'),
+    ]
+
+    COURSE_TYPES = [
+        ('Theory', 'Theory'),
+        ('Lab', 'Lab')
+    ]
+    
+    subject_code = models.CharField(max_length=20, unique=True)
+    subject_name = models.CharField(max_length=100)
+    subject_type = models.CharField(max_length=10, choices=SUBJECT_TYPES)
+    course_type = models.CharField(max_length=10, choices=COURSE_TYPES)
+    semester = models.IntegerField()
+    faculty = models.CharField(max_length=100)  # Change to ForeignKey if linking to a Faculty model
+
+    def __str__(self):
+        return f"{self.subject_code} - {self.subject_name}"

@@ -1,7 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from .models import ExtendedUser
-from studentApp.models import Course
+from django.shortcuts import get_object_or_404
+
+from studentApp.models import Course 
+from adminApp.models import Subject
+from .forms import SubjectForm
 
 
 # Create your views here.
@@ -41,3 +45,51 @@ def dashboard(request):
 def courses(request):
     courses = Course.objects.all()
     return render(request, 'adminApp/manage_course.html', {'courses': courses})
+
+def subject(request):
+    subjects = Subject.objects.all()
+    return render(request, 'adminApp/manage_subject.html', {'subjects': subjects})
+
+def add_subject(request) :
+    if request.method == "POST":
+        form =SubjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("/manage-subject")
+        data = Subject.objects.all()
+    else:
+        form =SubjectForm()
+        data = Subject.objects.all()
+    return render(request, 'adminApp/add_subject.html', {'data':data, 'form' : form})
+
+
+
+
+    
+
+def update_subject(request, id):
+    if request.method == "POST":
+        pi = Subject.objects.get(pk=id)
+        fm = SubjectForm(request.POST, instance=pi)
+        if fm.is_valid():
+            fm.save()
+            return redirect("/manage-subject")
+    else :
+        pi= Subject.objects.get(pk=id)
+        fm =SubjectForm(instance=pi)
+    return render(request, 'adminApp/update_subject.html', {'form':fm})
+    
+    
+
+
+
+def delete_subject(request, id):
+    pi = get_object_or_404(Subject, pk=id)  # Handle case where subject doesn't exist
+    print("subj id", pi)
+    if request.method == "POST":
+        pi.delete()
+        print("deleted")
+        return HttpResponseRedirect("/manage-subject")
+    
+    # If a GET request is made, redirect or show a confirmation page
+    return redirect("/manage-subject") 
