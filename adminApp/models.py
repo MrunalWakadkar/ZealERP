@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from studentApp.models import Course 
 
 class ExtendedUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -38,6 +39,8 @@ class Subject(models.Model):
     course_type = models.CharField(max_length=10, choices=COURSE_TYPES)
     semester = models.IntegerField()
     faculty = models.CharField(max_length=100)  # Change to ForeignKey if linking to a Faculty model
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="subjects", null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.subject_code} - {self.subject_name}"

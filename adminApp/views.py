@@ -1,9 +1,5 @@
 
-from django.shortcuts import render, redirect, HttpResponseRedirect
-
-from django.shortcuts import render, redirect, HttpResponse
-
-
+from django.shortcuts import render, redirect, HttpResponseRedirect ,HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .models import ExtendedUser
 from django.shortcuts import get_object_or_404
@@ -48,11 +44,7 @@ def dashboard(request):
     return render(request, 'adminApp/index.html')
 
 
-def courses(request):
-    courses = Course.objects.all()
-    return render(request, 'adminApp/manage_course.html', {'courses': courses})
-
-
+# SUBJECT MANAGEMENT
 def subject(request):
     subjects = Subject.objects.all()
     return render(request, 'adminApp/manage_subject.html', {'subjects': subjects})
@@ -69,11 +61,6 @@ def add_subject(request) :
         data = Subject.objects.all()
     return render(request, 'adminApp/add_subject.html', {'data':data, 'form' : form})
 
-
-
-
-    
-
 def update_subject(request, id):
     if request.method == "POST":
         pi = Subject.objects.get(pk=id)
@@ -86,10 +73,6 @@ def update_subject(request, id):
         fm =SubjectForm(instance=pi)
     return render(request, 'adminApp/update_subject.html', {'form':fm})
     
-    
-
-
-
 def delete_subject(request, id):
     pi = get_object_or_404(Subject, pk=id)  # Handle case where subject doesn't exist
     print("subj id", pi)
@@ -100,6 +83,14 @@ def delete_subject(request, id):
     
     # If a GET request is made, redirect or show a confirmation page
     return redirect("/manage-subject") 
+
+
+
+
+# COURSE MANAGEMENT
+def courses(request):
+    courses = Course.objects.all()
+    return render(request, 'adminApp/manage_course.html', {'courses': courses})
 
 def edit_course(request, course_id):
     try:
