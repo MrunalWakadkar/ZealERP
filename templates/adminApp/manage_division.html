@@ -1,0 +1,40 @@
+{% extends "adminApp/index.html" %}
+
+{% block mainblock %}
+<div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Manage Division/h6>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Division Name</th>
+                        <th scope="col">Course</th>
+                        <th scope="col">Academic Year</th>
+                        <th scope="col">Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for divi in divisions %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{divi.name}}</td>
+                        <td>{{divi.course}}</td>
+                        <td>{{divi.academic_year}}</td>
+                        {% if course.is_active %}
+                        <td>Active</td>
+                        {% else %}
+                        <td>Inactive</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock mainblock %}
