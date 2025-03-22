@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'adminApp.apps.AdminappConfig',
+    'studentApp.apps.StudentappConfig',
+    'facultyApp.apps.FacultyappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -138,6 +141,9 @@ STATICFILES_DIRS =[
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+if not os.path.exists(os.path.join(MEDIA_ROOT, 'profiles')):
+    os.makedirs(os.path.join(MEDIA_ROOT, 'profiles'))
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
