@@ -1,4 +1,5 @@
 /env
+.env
 /adminApp/migrations/*
 /studentApp/migrations/*
 /facultyApp/migrations/*
