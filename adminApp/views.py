@@ -1,7 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
+
 from django.contrib.auth import authenticate, login, logout
 from .models import ExtendedUser
-from studentApp.models import Course, Division
+from studentApp.models import Course
+from facultyApp.models import Division
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+# from .models import Division
+
 
 
 # Create your views here.
@@ -42,6 +49,92 @@ def courses(request):
     courses = Course.objects.all()
     return render(request, 'adminApp/manage_course.html', {'courses': courses})
 
+
 def divisions(request):
-    divisions = Division.objects.all()
-    return render(request, 'adminApp/manage_division.html', {'divisions': divisions})
+    division = Division.objects.all()
+    return render(request, 'adminApp/manage_division.html',{'divisions':division})
+
+def edit_course(request, course_id):
+    try:
+        course = Course.objects.get(id=course_id)
+    except Course.DoesNotExist:
+        return HttpResponse("Course not found", status=404)
+
+    if request.method == 'POST':
+        course_name = request.POST.get('name')
+        course_duration = request.POST.get('duration')
+        course_is_active = request.POST.get('is_active') == 'True'
+
+        course.name = course_name
+        course.duration = course_duration
+        course.is_active = course_is_active
+        course.save()
+
+        return redirect('manage_course')  # Corrected redirect
+
+    return render(request, 'adminApp/edit_course.html', {'course': course})
+
+def delete_course(request, course_id):
+    try:
+        course = Course.objects.get(id=course_id)
+        course.delete()
+        return redirect('manage_course')  # Corrected redirect
+    except Course.DoesNotExist:
+        return HttpResponse("Course not found", status=404)
+
+def add_course(request):
+    if request.method == 'POST':
+        course_name = request.POST.get('name')
+        course_duration = request.POST.get('duration')
+        course_is_active = request.POST.get('is_active') == 'True'
+
+        Course.objects.create(
+            name=course_name,
+            duration=course_duration,
+            is_active=course_is_active
+        )
+        return redirect('manage_course') #redirect after adding a course
+
+    return render(request, 'adminApp/add_course.html')
+
+def add_division(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        academic_year = request.POST.get('academic')
+        department = request.POST.get('department')
+        total_student = request.POST.get('total')
+        Division.objects.create( name=name, academic_year=academic_year, department=department, total_students=total_student)
+        return render(request,'adminApp/add_division.html')
+    else:
+        return render(request,'adminApp/add_division.html')
+
+def edit_division(request, division_id):
+    try:
+        division = Division.objects.get(id=division_id)
+    except Division.DoesNotExist:
+        return HttpResponse("Division not found", status=404)
+
+    if request.method == 'POST':
+        division_name = request.POST.get('name')
+        division_academic = request.POST.get('academic_year')
+        division_department = request.POST.get('department')
+        division_total = request.POST.get('total')
+
+        division.name = division_name
+        division.academic_year = division_academic  
+        division.department = division_department
+        division.total_students = division_total
+        division.save()
+
+        return redirect('/manage-division')  # Corrected redirect
+
+    return render(request, 'adminApp/edit_division.html', {'division': division})
+
+
+def delete_division(request, division_id):
+    try:
+        division = Division.objects.get(id=division_id)
+        division.delete()
+        return redirect('/manage-division')  # Corrected redirect
+    except Division.DoesNotExist:
+        return HttpResponse("Division not found", status=404)
