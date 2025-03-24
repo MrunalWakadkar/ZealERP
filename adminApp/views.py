@@ -5,7 +5,7 @@ from .models import ExtendedUser
 from studentApp.models import Course,Student,Division
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from facultyApp.models import Staff
 
 
 
@@ -239,3 +239,74 @@ def update_student(request, student_id):
 
     return render(request, 'adminApp/update_student.html', locals())
 
+#manage staff
+def manage_staff(request):
+    staff_members = Staff.objects.all()
+    return render(request, 'adminApp/manage_staff.html', {'staff_members': staff_members})
+
+def add_staff(request):
+    if request.method == "POST":
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        designation = request.POST['designation']
+        joining_date = request.POST['joining_date']
+        is_gfm = request.POST.get('is_gfm', False)
+        password = request.POST['password']
+
+        if Staff.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return redirect('add_staff')
+        
+        user = User.objects.create_user(
+            username=email, email=email, password=password,
+            first_name=first_name, last_name=last_name
+        )
+
+        staff = Staff.objects.create(
+            user=user,
+            email=email,
+            phone=phone,
+            designation=designation,
+            joining_date=joining_date,
+            is_gfm=bool(is_gfm)
+        )
+        staff.save()
+
+        messages.success(request, "Staff member added successfully!")
+        return redirect('manage_staff')
+    
+    return render(request, 'adminApp/add_staff.html')
+
+def update_staff(request, staff_id):
+    staff = get_object_or_404(Staff, id=staff_id)
+
+    if (request.method == 'POST'):
+        staff.user.first_name = request.POST['first_name']
+        staff.user.last_name = request.POST['last_name']
+        staff.email = request.POST['email']
+        staff.phone = request.POST['phone']
+        staff.designation = request.POST['designation']
+        staff.joining_date = request.POST['joining_date']
+        staff.is_gfm = request.POST.get('is_gfm', False)
+
+        staff.user.save()
+        staff.save()
+
+        messages.success(request, "Staff details updated successfully!")
+        return redirect('manage_staff')
+    
+    return render(request, 'adminApp/update_staff.html', {'staff': staff})
+
+def delete_staff(request, staff_id):
+    staff = get_object_or_404(Staff, id=staff_id)
+
+    if request.method == 'POST':
+        user = staff.user
+        staff.delete()
+        user.delete()
+
+        messages.success(request, "Staff details updated successfully!")
+        return redirect('manage_staff')
+    return render(request, 'adminApp/delete_staff.html',{'staff':staff})
