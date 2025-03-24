@@ -17,5 +17,10 @@ urlpatterns = [
     path('edit-course/<int:course_id>/', views.edit_course, name='edit_course'),
     path('delete-course/<int:course_id>/', views.delete_course, name='delete_course'),
     path('add-course/', views.add_course, name='add_course'),
+     path('manage-student',views.manage_student,name ='manage_student'),
+    path('add-student',views.add_student,name ='add_student'),
+    path('update-student/<int:student_id>/', views.update_student, name='update_student'),
+    path('delete-student/<int:student_id>/', views.delete_student, name='delete_student'),
+
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
