@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404,HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .models import ExtendedUser
+
 from studentApp.models import Course,Student,Division
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -46,6 +47,11 @@ def courses(request):
     courses = Course.objects.all()
     return render(request, 'adminApp/manage_course.html', {'courses': courses})
 
+
+def divisions(request):
+    division = Division.objects.all()
+    return render(request, 'adminApp/manage_division.html',{'divisions':division})
+
 def edit_course(request, course_id):
     try:
         course = Course.objects.get(id=course_id)
@@ -88,6 +94,48 @@ def add_course(request):
         return redirect('manage_course') #redirect after adding a course
 
     return render(request, 'adminApp/add_course.html')
+
+def add_division(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        academic_year = request.POST.get('academic')
+        department = request.POST.get('department')
+        total_student = request.POST.get('total')
+        Division.objects.create( name=name, academic_year=academic_year, department=department, total_students=total_student)
+        return render(request,'adminApp/add_division.html')
+    else:
+        return render(request,'adminApp/add_division.html')
+
+def edit_division(request, division_id):
+    try:
+        division = Division.objects.get(id=division_id)
+    except Division.DoesNotExist:
+        return HttpResponse("Division not found", status=404)
+
+    if request.method == 'POST':
+        division_name = request.POST.get('name')
+        division_academic = request.POST.get('academic_year')
+        division_department = request.POST.get('department')
+        division_total = request.POST.get('total')
+
+        division.name = division_name
+        division.academic_year = division_academic  
+        division.department = division_department
+        division.total_students = division_total
+        division.save()
+
+        return redirect('/manage-division')  # Corrected redirect
+
+    return render(request, 'adminApp/edit_division.html', {'division': division})
+
+
+def delete_division(request, division_id):
+    try:
+        division = Division.objects.get(id=division_id)
+        division.delete()
+        return redirect('/manage-division')  # Corrected redirect
+    except Division.DoesNotExist:
+        return HttpResponse("Division not found", status=404)
 
 
 
