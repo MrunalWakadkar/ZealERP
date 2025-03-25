@@ -1,12 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404,HttpResponse
+
+
+from django.shortcuts import render, redirect, HttpResponseRedirect ,HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .models import ExtendedUser
+from django.shortcuts import get_object_or_404
+
+
+from adminApp.models import Subject
+from .forms import SubjectForm
+
+
 
 from studentApp.models import Course,Student,Division
 from django.contrib.auth.models import User
 from django.contrib import messages
 from facultyApp.models import Staff
-from .models import ExtendedUser
+
+
 
 
 
@@ -44,6 +54,50 @@ def dashboard(request):
     return render(request, 'adminApp/index.html')
 
 
+# SUBJECT MANAGEMENT
+def subject(request):
+    subjects = Subject.objects.all()
+    return render(request, 'adminApp/manage_subject.html', {'subjects': subjects})
+
+def add_subject(request) :
+    if request.method == "POST":
+        form =SubjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("/manage-subject")
+        data = Subject.objects.all()
+    else:
+        form =SubjectForm()
+        data = Subject.objects.all()
+    return render(request, 'adminApp/add_subject.html', {'data':data, 'form' : form})
+
+def update_subject(request, id):
+    if request.method == "POST":
+        pi = Subject.objects.get(pk=id)
+        fm = SubjectForm(request.POST, instance=pi)
+        if fm.is_valid():
+            fm.save()
+            return redirect("/manage-subject")
+    else :
+        pi= Subject.objects.get(pk=id)
+        fm =SubjectForm(instance=pi)
+    return render(request, 'adminApp/update_subject.html', {'form':fm})
+    
+def delete_subject(request, id):
+    pi = get_object_or_404(Subject, pk=id)  # Handle case where subject doesn't exist
+    print("subj id", pi)
+    if request.method == "POST":
+        pi.delete()
+        print("deleted")
+        return HttpResponseRedirect("/manage-subject")
+    
+    # If a GET request is made, redirect or show a confirmation page
+    return redirect("/manage-subject") 
+
+
+
+
+# COURSE MANAGEMENT
 def courses(request):
     courses = Course.objects.all()
     return render(request, 'adminApp/manage_course.html', {'courses': courses})
@@ -95,6 +149,7 @@ def add_course(request):
         return redirect('manage_course') #redirect after adding a course
 
     return render(request, 'adminApp/add_course.html')
+
 
 def add_division(request):
     if request.method == "POST":
@@ -323,3 +378,4 @@ def delete_staff(request, staff_id):
         messages.success(request, "Staff details updated successfully!")
         return redirect('manage_staff')
     return render(request, 'adminApp/delete_staff.html',{'staff':staff})
+
