@@ -87,19 +87,12 @@ WSGI_APPLICATION = 'ZealERP.wsgi.application'
 #     }
 # }
 
-# Load environment variables from .env file
-from dotenv import load_dotenv
-
-load_dotenv()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("DATABASE_NAME"),
         'HOST': "localhost",
-        'USER': "root",
-        'PASSWORD': "Yerne2706@",
-
         'USER': os.getenv("DATABASE_USER"),
         'PASSWORD': os.getenv("DATABASE_PASSWORD"),
         'PORT':"3306"
