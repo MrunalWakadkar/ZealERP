@@ -1,6 +1,8 @@
+
 from django.shortcuts import render, redirect
-from studentApp.models import Course , Student
+from studentApp.models import Course , Student, Division 
 from adminApp.models import Subject
+
 
 
 
@@ -23,3 +25,11 @@ def view_subjects(request):
             print('No student found for the user')
             return redirect('/') 
     return render(request, 'view_subjects.html', {'subjects': subjects})
+
+def divisions(request):
+    divisions = Division.objects.all()
+    return render(request, 'adminApp/manage_division.html', {'divisions': divisions})
+
+def courses(request):
+    courses = Course.objects.all()
+

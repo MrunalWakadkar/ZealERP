@@ -7,6 +7,7 @@ urlpatterns = [
     path('signin', views.signin, name='signin'),
     path('', views.dashboard, name='dashboard'),
 
+
     path('index', views.dashboard, name='dashboard'),
 
    
@@ -19,9 +20,9 @@ urlpatterns = [
     
 
   
+
     path('manage-division', views.divisions, name='divisions'),
     path('add_division', views.add_division, name='divisions'),
-
     path('edit-division/<int:division_id>/', views.edit_division, name='edit_division'),
     path('delete-division/<int:division_id>/', views.delete_division, name='delete_division'),
 
