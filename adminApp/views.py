@@ -174,8 +174,11 @@ def add_student(request):
 
         user = User.objects.create_user(
             username=username, email=email, password=password,
-            first_name=first_name, last_name=last_name
+            first_name=first_name, last_name=last_name,
+           
         )
+
+        extended_user = ExtendedUser.objects.create(user=user, user_type='student')
 
         student = Student(
             user=user,
