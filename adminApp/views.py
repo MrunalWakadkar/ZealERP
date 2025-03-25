@@ -97,15 +97,26 @@ def add_course(request):
     return render(request, 'adminApp/add_course.html')
 
 def add_division(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        academic_year = request.POST.get('academic')
-        department = request.POST.get('department')
-        total_student = request.POST.get('total')
-        Division.objects.create( name=name, academic_year=academic_year, department=department, total_students=total_student)
-        return render(request,'adminApp/add_division.html')
-    else:
-        return render(request,'adminApp/add_division.html')
+    if request.method == "POST":
+        name = request.POST.get("name")
+
+        academic_year = request.POST.get("academic")
+        course_id = request.POST.get("course_id")  # Fetch the selected course ID
+
+        if not course_id:
+            return render(request, "adminApp/add_division.html", {
+                "error": "Please select a course.",
+                "courses": Course.objects.all()
+            })
+
+        course = Course.objects.get(id=course_id)  # Get the course object
+
+        Division.objects.create(name=name, academic_year=academic_year, course=course)
+
+        return redirect("/manage-division")  # Redirect after successful addition
+
+    data = Course.objects.all()
+    return render(request, "adminApp/add_division.html", {"courses": data})
 
 def edit_division(request, division_id):
     try:
@@ -116,13 +127,9 @@ def edit_division(request, division_id):
     if request.method == 'POST':
         division_name = request.POST.get('name')
         division_academic = request.POST.get('academic_year')
-        division_department = request.POST.get('department')
-        division_total = request.POST.get('total')
 
         division.name = division_name
         division.academic_year = division_academic  
-        division.department = division_department
-        division.total_students = division_total
         division.save()
 
         return redirect('/manage-division')  # Corrected redirect
