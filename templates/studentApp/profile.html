@@ -1,0 +1,53 @@
+{% extends 'studentApp/index.html' %}
+
+{% block mainblock %}
+
+    <!-- Main Content -->
+    <main class="content">
+        <h1>Your Personal Profile Info</h1>
+        {% if user.is_authenticated %}
+        {% if student %}
+        <div class="profile-container">
+            <div class="form-section">
+                <h2>Profile</h2>
+                <label>First Name</label>
+                <input type="text" placeholder="First Name" value="{{ student.user.first_name }}" readonly>
+
+                <label>Last Name</label>
+                <input type="text" placeholder="Last Name" value="{{ student.user.last_name }}" readonly>
+
+                <label>Email</label>
+                <input type="email" placeholder="Email" value="{{ student.user.email }}" readonly >
+
+                <label>Date of Birth</label>
+                <input type="text" placeholder="Date of Birth" value="{{ student.dob }}" readonly>
+
+                <label>Gender</label>
+                <input type="text" placeholder="Gender" value="{{ student.gender }}" readonly>
+
+                <label>Enrollment Number</label>
+                <input type="text" placeholder="Enrollment Number" value="{{ student.enrollment_number }}" readonly>
+
+                <label>Course</label>
+                <input type="text" placeholder="Course" value="{{ student.course.name }}" readonly>
+
+                <label>Division</label>
+                <input type="text" placeholder="Division" value="{{ student.division.name }}" readonly>
+
+                <label>Guardian Name</label>
+                <input type="text" placeholder="g_name" value="{{ student.guardian_name.name }}" readonly>
+
+                <label>Guardian Phone </label>
+                <input type="text" placeholder="g_phone" value="{{ student.guardian_phone.name }}" readonly>
+            </div>
+
+        </div>
+        {% else %}
+        <p style="color: red;">Student record not found. Please contact support.</p>
+         {% endif %}
+        {% else %}
+            <p>Please log in to view your profile.</p>
+        {% endif %}
+    </main>
+
+{% endblock mainblock %}

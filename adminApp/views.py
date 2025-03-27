@@ -27,25 +27,22 @@ def signin(request):
         email = request.POST['email']
         password = request.POST['password']
 
-        user = authenticate( request,username=email, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
-            ex_user = ExtendedUser.objects.get(user=user.id)
+            # Ensure the ExtendedUser exists
+            ex_user = ExtendedUser.objects.filter(user=user).first()
+            if not ex_user:
+                print("ExtendedUser does not exist!")
+                return redirect('/signin')  # Redirect or handle error properly
+            
             if ex_user.user_type == user_type:
                 print("User Type Correct!")
-                # redirect to corresponding dashboard
-                if user_type == "admin":
-                    login(request, user)
-                    return redirect('/')
-                elif user_type == "student":
-                    login(request, user)
-                    return redirect('/student')
-                elif user_type == "staff":
-                    login(request, user)
-                    return redirect('/staff')
-        else:
-            print("Invalid Credentials!!")
-            return redirect('/signin')
+                login(request, user)
+                return redirect(f'/{user_type}')  # Redirect based on user type
         
+        print("Invalid Credentials!!")
+        return redirect('/signin')
+
     return render(request, 'signin.html')
 
 
@@ -104,8 +101,8 @@ def courses(request):
 
 
 def divisions(request):
-    division = Division.objects.all()
-    return render(request, 'adminApp/manage_division.html',{'divisions':division})
+    divisions = Division.objects.all()
+    return render(request, 'adminApp/manage_division.html',{'divisions':divisions})
 
 def edit_course(request, course_id):
     try:

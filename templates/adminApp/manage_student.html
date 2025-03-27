@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for student in students %}
+                    {% for student in Student %}
                     <tr class="text-center">
                         <th scope="row">{{ forloop.counter }}</th>
                         <td class="text-nowrap">{{ student.user.first_name }} {{ student.user.last_name }}</td>
