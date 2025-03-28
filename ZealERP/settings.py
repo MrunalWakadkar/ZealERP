@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 from dotenv import load_dotenv
-
+import os
 load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -87,17 +87,15 @@ WSGI_APPLICATION = 'ZealERP.wsgi.application'
 #     }
 # }
 
-# Load environment variables from .env file
-load_dotenv()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("DATABASE_NAME"),
+        'HOST': "localhost",
         'USER': os.getenv("DATABASE_USER"),
         'PASSWORD': os.getenv("DATABASE_PASSWORD"),
-        'HOST': "localhost",
-        'PORT': "3306",
+        'PORT':"3306"
     }
 }
 
